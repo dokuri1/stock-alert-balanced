@@ -1,0 +1,13 @@
+from __future__ import annotations
+
+from pathlib import Path
+import yaml
+
+
+BASE_DIR = Path(__file__).resolve().parents[1]
+CONFIG_DIR = BASE_DIR / "config"
+
+
+def load_yaml(name: str):
+    with open(CONFIG_DIR / name, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)

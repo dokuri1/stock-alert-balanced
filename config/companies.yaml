@@ -1,0 +1,36 @@
+companies:
+  - name: "제이앤티씨"
+    dart_name: "제이앤티씨"
+    aliases: ["제이앤티씨", "jntc", "JNTC"]
+    news_queries:
+      - '"제이앤티씨"'
+      - '"제이앤티씨" "공급계약"'
+      - '"제이앤티씨" "유리기판"'
+      - '"제이앤티씨" "양산"'
+      - '"JNTC" "glass substrate"'
+    require_keywords_any: ["제이앤티씨", "jntc", "유리기판", "공급계약", "양산", "고객사", "실적"]
+    exclude_keywords: []
+
+  - name: "태성"
+    dart_name: "태성"
+    aliases: ["태성"]
+    news_queries:
+      - '"태성" "공급계약"'
+      - '"태성" "수주"'
+      - '"태성" "글라스기판"'
+      - '"태성" "반도체 장비"'
+      - '"태성" "2차전지"'
+    require_keywords_any: ["태성", "공급계약", "수주", "글라스기판", "유리기판", "반도체", "2차전지", "장비", "고객사", "증설"]
+    exclude_keywords: []
+
+  - name: "스피어"
+    dart_name: "스피어"
+    aliases: ["스피어"]
+    news_queries:
+      - '"스피어" "공급계약"'
+      - '"스피어" "계약"'
+      - '"스피어" "실적"'
+      - '"스피어" "제휴"'
+      - '"스피어" "신사업"'
+    require_keywords_any: ["스피어", "공급계약", "계약", "실적", "제휴", "신사업", "기술", "투자"]
+    exclude_keywords: ["스피어3D", "Spear 3D", "스피어AX", "메타팩토리"]
