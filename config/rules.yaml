@@ -1,6 +1,7 @@
 source_weights:
   DART: 45
   GOOGLE_NEWS: 18
+
 positive_keywords:
   공급계약: 35
   단일판매: 35
@@ -21,6 +22,7 @@ positive_keywords:
   제휴: 15
   투자: 10
   플랫폼: 8
+
 negative_keywords:
   조회공시: -20
   해명공시: -20
@@ -36,10 +38,15 @@ negative_keywords:
   최대주주변경: -20
   소송: -35
   감사의견: -35
+
 thresholds:
   P1: 85
   P2: 65
   P3: 45
+
 cooldown_minutes: 180
 lookback_days: 2
 news_limit_per_query: 5
+news_max_age_hours: 36
+seen_retention_days: 14
+
