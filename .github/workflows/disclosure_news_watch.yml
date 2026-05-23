@@ -6,12 +6,21 @@ on:
     - cron: '*/15 0-6 * * 1-5'
     - cron: '0 */2 * * *'
 
+permissions:
+  contents: write
+
+concurrency:
+  group: disclosure-news-watch
+  cancel-in-progress: false
+
 jobs:
   run-watch:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -21,9 +30,26 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Ensure state file exists
+        run: |
+          mkdir -p data
+          test -f data/state.json || echo '{"seen": {}, "last_run": null}' > data/state.json
+
       - name: Run watcher
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python src/main.py
+
+      - name: Commit updated state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/state.json
+          if git diff --cached --quiet; then
+            echo "No state changes to commit"
+          else
+            git commit -m "chore: update alert state [skip ci]"
+            git push
+          fi
