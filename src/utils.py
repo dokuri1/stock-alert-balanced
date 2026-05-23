@@ -3,7 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from datetime import datetime, timezone
+import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -39,3 +40,25 @@ def getenv_bool(name: str, default: bool = False) -> bool:
     if value is None:
         return default
     return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def normalize_title(title: str) -> str:
+    t = (title or "").strip()
+    t = re.sub(r"\s+-\s+[^-]+$", "", t)
+    t = re.sub(r"\[[^\]]+\]", "", t)
+    t = re.sub(r"\([^\)]*특징주[^\)]*\)", "", t, flags=re.IGNORECASE)
+    t = re.sub(r"\s+", " ", t).strip().lower()
+    return t
+
+
+def prune_timestamp_map(items: dict[str, str], retention_days: int) -> dict[str, str]:
+    cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
+    kept: dict[str, str] = {}
+    for key, value in items.items():
+        try:
+            dt = datetime.fromisoformat(value)
+            if dt >= cutoff:
+                kept[key] = value
+        except Exception:
+            continue
+    return kept
