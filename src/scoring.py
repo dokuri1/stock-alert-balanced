@@ -24,16 +24,16 @@ def score_event(event: dict, rules: dict, company_cfg: dict) -> ScoredEvent:
 
     score = rules["source_weights"].get(event["source"], 0)
     reasons = [f"source={event['source']}"]
-    positive = []
-    negative = []
+    positive: list[str] = []
+    negative: list[str] = []
 
     aliases = [a.lower() for a in company_cfg.get("aliases", []) if a]
     if event["source"] == "GOOGLE_NEWS":
         if aliases and any(alias in text for alias in aliases):
-            score += 12
+            score += 20
             reasons.append("alias_match")
         elif aliases:
-            score -= 60
+            score -= 40
             reasons.append("alias_mismatch")
 
     required = [k.lower() for k in company_cfg.get("require_keywords_any", []) if k]
@@ -42,7 +42,7 @@ def score_event(event: dict, rules: dict, company_cfg: dict) -> ScoredEvent:
             score += 10
             reasons.append("context_match")
         elif required:
-            score -= 35
+            score -= 25
             reasons.append("context_mismatch")
 
     excluded = [k.lower() for k in company_cfg.get("exclude_keywords", []) if k]
@@ -62,8 +62,10 @@ def score_event(event: dict, rules: dict, company_cfg: dict) -> ScoredEvent:
             score += int(weight)
             negative.append(keyword)
 
-    if event["source"] == "DART" and any(k in positive for k in ["공급계약", "단일판매", "수주", "실적"]):
-        score += 12
+    if event["source"] == "DART" and any(
+        k in positive for k in ["공급계약", "단일판매", "수주", "실적"]
+    ):
+        score += 15
         reasons.append("dart_high_signal")
 
     if positive:
@@ -81,4 +83,11 @@ def score_event(event: dict, rules: dict, company_cfg: dict) -> ScoredEvent:
     else:
         grade = "P4"
 
-    return ScoredEvent(event=event, score=score, grade=grade, matched_positive=positive, matched_negative=negative, reason=reasons)
+    return ScoredEvent(
+        event=event,
+        score=score,
+        grade=grade,
+        matched_positive=positive,
+        matched_negative=negative,
+        reason=reasons,
+    )
